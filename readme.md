@@ -237,4 +237,22 @@ uvicorn main:app --reload
 
 ## License
 
-MIT — Feel free to use and modify.
+### User Authentication & Data Management
+
+The application implements a user-based authentication system using JSON Web Tokens (JWT). A single shared database schema is used to manage all users and their associated data.
+
+A centralized table structure is maintained for entities such as cart_items and wishlist, where each record is linked to a specific user through a user_id field. Instead of creating separate tables per user, this approach ensures scalability and efficient data management.
+
+When a user logs in, a JWT token containing the user_id is generated. For every authenticated request, this token is sent in the request header and decoded on the backend to extract the user's identity.
+
+Using this user_id, SQL queries are executed to retrieve user-specific data. For example:
+
+- Fetch cart items:
+  SELECT * FROM cart_items WHERE user_id = <user_id>;
+
+- Fetch wishlist items:
+  SELECT * FROM wishlist WHERE user_id = <user_id>;
+
+This design allows multiple users to share the same tables while ensuring that each user can only access their own data through backend-controlled queries.
+
+Overall, the system follows a scalable and secure approach by combining JWT-based authentication with relational database design using user-specific filtering.
